@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaby Boulder Tracker 🧗</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #eeece7;
+    --text: #1a1a18;
+    --text2: #6b6a65;
+    --text3: #9c9b96;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --green: #1D9E75;
+    --green-bg: #E1F5EE;
+    --green-dark: #085041;
+    --purple: #534AB7;
+    --purple-bg: #EEEDFE;
+    --purple-dark: #3C3489;
+    --amber-bg: #FAEEDA;
+    --amber: #BA7517;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #252523;
+      --bg3: #2e2e2b;
+      --text: #f0ede6;
+      --text2: #a0a09a;
+      --text3: #6b6a65;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.22);
+      --green-bg: #0a3d2b;
+      --purple-bg: #1e1a4a;
+      --amber-bg: #3a2a0a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 24px; font-weight: 600; }
+  .header p { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .progress-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+  .pcard { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
+  .pcard .label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .pcard .value { font-size: 20px; font-weight: 600; }
+  .pcard .sub { font-size: 11px; color: var(--text3); }
+  .week-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+  .week-nav button { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--text); }
+  .week-nav button:hover { background: var(--bg2); }
+  .week-label { font-size: 14px; font-weight: 500; flex: 1; text-align: center; }
+  .config-bar { margin-bottom: 1rem; padding: 10px 14px; background: var(--bg2); border-radius: var(--radius); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .config-bar span { font-size: 13px; color: var(--text2); }
+  .assign-day-btn { font-size: 12px; padding: 4px 10px; border: 0.5px solid var(--purple); color: var(--purple); background: none; border-radius: var(--radius); cursor: pointer; }
+  .assign-day-btn:hover { background: var(--purple-bg); }
+  .days-grid { display: flex; flex-direction: column; gap: 8px; }
+  .day-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .day-card.done { border-color: var(--green); }
+  .day-card.done .day-header { background: var(--green-bg); }
+  .day-header { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+  .day-header:hover { background: var(--bg2); }
+  .day-card.done .day-header:hover { filter: brightness(0.96); }
+  .day-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+  .day-card.done .day-dot { background: var(--green); }
+  .day-title { display: flex; align-items: center; gap: 10px; }
+  .day-name { font-size: 14px; font-weight: 500; }
+  .day-date { font-size: 12px; color: var(--text2); font-weight: 400; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 2px; }
+  .badge-intense { background: var(--purple-bg); color: var(--purple-dark); }
+  .badge-short { background: var(--green-bg); color: var(--green-dark); }
+  .badge-free { background: #FAECE7; color: #712B13; }
+  .day-actions { display: flex; align-items: center; gap: 8px; }
+  .task-count { font-size: 11px; color: var(--text3); }
+  .done-btn { font-size: 12px; padding: 4px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: none; cursor: pointer; color: var(--text2); white-space: nowrap; }
+  .done-btn:hover { background: var(--bg2); }
+  .day-card.done .done-btn { background: var(--green); color: white; border-color: var(--green); }
+  .chevron { font-size: 16px; color: var(--text2); transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+  .day-body { display: none; padding: 12px 16px 16px; border-top: 0.5px solid var(--border); }
+  .day-body.open { display: block; }
+  .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 12px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.4s; }
+  .section-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin: 12px 0 8px; }
+  .section-title:first-child { margin-top: 0; }
+  .task-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid var(--border); }
+  .task-row:last-child { border-bottom: none; }
+  .task-check { width: 18px; height: 18px; border: 0.5px solid var(--border2); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .task-check.checked { background: var(--green); border-color: var(--green); }
+  .task-check i { font-size: 12px; color: white; display: none; }
+  .task-check.checked i { display: block; }
+  .task-label { font-size: 13px; flex: 1; }
+  .task-label.checked-label { color: var(--text3); text-decoration: line-through; }
+  .task-mins { font-size: 11px; color: var(--text3); white-space: nowrap; }
+  .v-counter { margin: 8px 0; background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
+  .v-counter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .v-counter-label { font-size: 13px; font-weight: 500; }
+  .v-total { font-size: 13px; color: var(--text2); }
+  .v-levels { display: flex; gap: 10px; flex-wrap: wrap; }
+  .v-btn-group { display: flex; align-items: center; gap: 6px; }
+  .v-lvl { font-size: 12px; color: var(--text2); min-width: 26px; font-weight: 500; }
+  .v-cnt-btn { width: 26px; height: 26px; border: 0.5px solid var(--border2); background: var(--bg); border-radius: var(--radius); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--text); }
+  .v-cnt-btn:hover { background: var(--bg2); }
+  .v-count-num { min-width: 22px; text-align: center; font-size: 15px; font-weight: 600; }
+  .protein-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--amber-bg); border-radius: var(--radius); margin-top: 10px; cursor: pointer; }
+  .protein-row.checked { background: var(--green-bg); }
+  .protein-label { font-size: 13px; flex: 1; }
+  .protein-check { width: 22px; height: 22px; border: 0.5px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg); flex-shrink: 0; }
+  .protein-row.checked .protein-check { background: var(--green); border-color: var(--green); }
+  .protein-row.checked .protein-check i { color: white; }
+  .modal-overlay { position: fixed; top:0;left:0;right:0;bottom:0; background: rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:100; }
+  .modal { background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border2); padding: 20px; width: 320px; }
+  .modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .modal p { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
+  .modal-days { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .modal-day-btn { padding: 6px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: none; cursor: pointer; font-size: 13px; color: var(--text); }
+  .modal-day-btn.selected { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .modal-actions .cancel { padding: 6px 14px; border-radius: var(--radius); font-size: 13px; cursor: pointer; border: 0.5px solid var(--border2); background: none; color: var(--text); }
+  .modal-actions .confirm { padding: 6px 14px; border-radius: var(--radius); font-size: 13px; cursor: pointer; border: 0.5px solid var(--purple); background: var(--purple); color: white; }
+  .modal-actions .confirm:disabled { background: var(--bg2); border-color: var(--border); color: var(--text3); cursor: not-allowed; }
+  @media (max-width: 480px) {
+    .progress-cards { grid-template-columns: repeat(2, 1fr); }
+    .day-name { font-size: 13px; }
+    .v-levels { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🧗 Gaby Boulder Tracker</h1>
+    <p>Seguimiento semanal · Objetivo: V5 sólido → V6 frecuente → primeros V7</p>
+  </div>
+  <div class="progress-cards" id="progress-cards"></div>
+  <div class="week-nav">
+    <button onclick="changeWeek(-1)"><i class="ti ti-arrow-left"></i></button>
+    <span class="week-label" id="week-label"></span>
+    <button onclick="changeWeek(1)"><i class="ti ti-arrow-right"></i></button>
+  </div>
+  <div class="config-bar">
+    <span>Días de rutina extensa:</span>
+    <div id="intense-btns"></div>
+    <button class="assign-day-btn" onclick="openModal()"><i class="ti ti-edit"></i> Cambiar</button>
+  </div>
+  <div class="days-grid" id="days-grid"></div>
+  <div id="modal-root"></div>
+</div>
+
+<script>
+const DAY_SHORT = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const DAY_FULL = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+
+const TASKS_DIA1 = [
+  {id:'warm', label:'Calentamiento: movilidad hombros, muñecas, dedos + 2×V1, V2, V3', mins:15},
+  {id:'proj', label:'Proyectar: 2×V6 o 1×V6 + 1×V7 (2–3 min descanso entre intentos)', mins:20},
+  {id:'pullups', label:'Pull-ups lastradas o lentas 4×4'},
+  {id:'press', label:'Press militar mancuernas 3×8 (10–15 kg)'},
+  {id:'face', label:'Face Pulls o banda 3×15'},
+  {id:'hollow', label:'Hollow Body Hold 4×30s'},
+  {id:'farmer', label:'Farmer Carry 3×30s (mancuernas pesadas)'},
+  {id:'stretch', label:'Estiramiento + dedos: Prayer, Reverse Prayer, extensiones con liga', mins:10},
+];
+const TASKS_DIA2 = [
+  {id:'warm', label:'Calentamiento: movilidad hombros, muñecas, dedos + 2×V1, V2, V3', mins:15},
+  {id:'dynos', label:'Escalada: 5–6 problemas con dynos, coordinación, explosivos', mins:35},
+  {id:'boxjump', label:'Box Step Jump 3×8'},
+  {id:'kbswing', label:'Kettlebell Swing o mancuerna 3×12'},
+  {id:'pushpress', label:'Push Press 3×8'},
+  {id:'t2b', label:'Toes to Bar / Hanging Knee Raises 4×10'},
+  {id:'dedhang', label:'Dead Hang 3×20–30s'},
+  {id:'stretch', label:'Estiramiento + dedos: Prayer, Reverse Prayer, extensiones con liga', mins:10},
+];
+const TASKS_SHORT = [
+  {id:'warm', label:'Calentamiento suave', mins:5},
+  {id:'plank', label:'Plank 45s × 2 rondas'},
+  {id:'sideplank', label:'Side Plank 30s × lado × 2 rondas'},
+  {id:'scap', label:'Scapular Push-Ups 15 reps × 2'},
+  {id:'band', label:'Band Pull Apart 20 reps × 2'},
+  {id:'wrist', label:'Wrist Curls + Reverse Wrist Curls 15 reps × 2'},
+  {id:'stretch', label:'Estiramiento breve', mins:5},
+];
+const TASKS_FREE = [
+  {id:'warm', label:'Calentamiento libre', mins:10},
+  {id:'free', label:'Escalada libre V3–V5 — solo disfruta 🤙', mins:30},
+  {id:'stretch', label:'Estiramiento final', mins:10},
+];
+
+let intenseDays = JSON.parse(localStorage.getItem('intenseDays') || '[0,2]');
+let weekOffset = 0;
+let appState = JSON.parse(localStorage.getItem('gbState') || '{}');
+let modalOpen = false;
+let tempDays = [];
+
+function save() { localStorage.setItem('gbState', JSON.stringify(appState)); localStorage.setItem('intenseDays', JSON.stringify(intenseDays)); }
+
+function getWeekKey(offset) {
+  const now = new Date(); const day = now.getDay();
+  const mon = new Date(now); mon.setDate(now.getDate() - (day===0?6:day-1) + offset*7);
+  return mon.toISOString().slice(0,10);
+}
+function getWeekDates(offset) {
+  const now = new Date(); const day = now.getDay();
+  const mon = new Date(now); mon.setDate(now.getDate() - (day===0?6:day-1) + offset*7);
+  return Array.from({length:7},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
+}
+function getDayState(wk, di) {
+  if(!appState[wk]) appState[wk]={};
+  if(!appState[wk][di]) appState[wk][di]={tasks:{},done:false,vcounts:{V4:0,V5:0,V6:0,V7:0},protein:false,open:false};
+  return appState[wk][di];
+}
+function getDayType(di) {
+  if(intenseDays[0]===di) return 'dia1';
+  if(intenseDays[1]===di) return 'dia2';
+  return 'short';
+}
+function getTasks(type) {
+  if(type==='dia1') return TASKS_DIA1;
+  if(type==='dia2') return TASKS_DIA2;
+  return TASKS_SHORT;
+}
+
+function changeWeek(d) { weekOffset+=d; render(); }
+
+function toggleTask(wk,di,tid) { const ds=getDayState(wk,di); ds.tasks[tid]=!ds.tasks[tid]; save(); render(); }
+function toggleDone(wk,di) { const ds=getDayState(wk,di); ds.done=!ds.done; save(); render(); }
+function changeV(wk,di,lv,d) { const ds=getDayState(wk,di); ds.vcounts[lv]=Math.max(0,(ds.vcounts[lv]||0)+d); save(); render(); }
+function toggleProtein(wk,di) { const ds=getDayState(wk,di); ds.protein=!ds.protein; save(); render(); }
+function toggleOpen(wk,di) { const ds=getDayState(wk,di); ds.open=!ds.open; save(); render(); }
+
+function openModal() { tempDays=[...intenseDays]; modalOpen=true; render(); }
+function closeModal() { modalOpen=false; render(); }
+function toggleTempDay(d) {
+  if(tempDays.includes(d)) { if(tempDays.length>1) tempDays=tempDays.filter(x=>x!==d); }
+  else { if(tempDays.length<2) tempDays.push(d); }
+  render();
+}
+function confirmModal() { intenseDays=[...tempDays].sort((a,b)=>a-b); save(); modalOpen=false; render(); }
+
+function render() {
+  const wk = getWeekKey(weekOffset);
+  const dates = getWeekDates(weekOffset);
+  const opts = {day:'numeric',month:'short'};
+
+  document.getElementById('week-label').textContent =
+    dates[0].toLocaleDateString('es-MX',opts) + ' – ' + dates[6].toLocaleDateString('es-MX',opts);
+
+  // Stats
+  let totalT=0, doneT=0, totalV=0, protDays=0, sessDone=0;
+  for(let d=0;d<7;d++) {
+    const ds=getDayState(wk,d);
+    const tasks=getTasks(getDayType(d));
+    totalT+=tasks.length; doneT+=tasks.filter(t=>ds.tasks[t.id]).length;
+    totalV+=Object.values(ds.vcounts).reduce((a,b)=>a+b,0);
+    if(ds.protein) protDays++;
+    if(ds.done && intenseDays.includes(d)) sessDone++;
+  }
+  const pct = totalT ? Math.round(doneT/totalT*100) : 0;
+  document.getElementById('progress-cards').innerHTML = `
+    <div class="pcard"><div class="label">Semana</div><div class="value">${pct}%</div><div class="sub">completado</div></div>
+    <div class="pcard"><div class="label">Rutas V4+</div><div class="value">${totalV}</div><div class="sub">esta semana</div></div>
+    <div class="pcard"><div class="label">Proteína</div><div class="value">${protDays}/7</div><div class="sub">días</div></div>
+    <div class="pcard"><div class="label">Sesiones</div><div class="value">${sessDone}/2</div><div class="sub">intensas ✓</div></div>`;
+
+  document.getElementById('intense-btns').innerHTML = intenseDays.map(d=>
+    `<span style="font-size:12px;padding:3px 10px;border-radius:20px;background:var(--purple-bg);color:var(--purple-dark);margin-right:4px">${DAY_SHORT[d]}</span>`).join('');
+
+  // Days
+  document.getElementById('days-grid').innerHTML = dates.map((date,di)=>{
+    const ds=getDayState(wk,di);
+    const type=getDayType(di);
+    const tasks=getTasks(type);
+    const typeLabel = type==='dia1'?'Fuerza + Proyectos':type==='dia2'?'Potencia + Explosivos':'Rutina corta · 10 min';
+    const badgeClass = type.startsWith('dia')?'badge-intense':'badge-short';
+    const tDone=tasks.filter(t=>ds.tasks[t.id]).length;
+    const pctD=Math.round(tDone/tasks.length*100);
+    const dateStr=date.toLocaleDateString('es-MX',opts);
+    const totalVDay=Object.values(ds.vcounts).reduce((a,b)=>a+b,0);
+
+    return `<div class="day-card${ds.done?' done':''}">
+      <div class="day-header" onclick="toggleOpen('${wk}',${di})">
+        <div class="day-title">
+          <div class="day-dot"></div>
+          <div>
+            <span class="day-name">${DAY_FULL[di]} <span class="day-date">${dateStr}</span></span><br>
+            <span class="badge ${badgeClass}">${typeLabel}</span>
+          </div>
+        </div>
+        <div class="day-actions">
+          <span class="task-count">${tDone}/${tasks.length}</span>
+          <button class="done-btn" onclick="event.stopPropagation();toggleDone('${wk}',${di})">${ds.done?'✓ Done':'Marcar done'}</button>
+          <i class="ti ti-chevron-down chevron${ds.open?' open':''}"></i>
+        </div>
+      </div>
+      <div class="day-body${ds.open?' open':''}">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pctD}%"></div></div>
+        <div class="section-title">Tareas del día</div>
+        ${tasks.map(t=>{
+          const chk=!!ds.tasks[t.id];
+          return `<div class="task-row">
+            <div class="task-check${chk?' checked':''}" onclick="toggleTask('${wk}',${di},'${t.id}')"><i class="ti ti-check"></i></div>
+            <span class="task-label${chk?' checked-label':''}">${t.label}</span>
+            ${t.mins?`<span class="task-mins">${t.mins} min</span>`:''}
+          </div>`;
+        }).join('')}
+        <div class="section-title" style="margin-top:14px">Rutas logradas</div>
+        <div class="v-counter">
+          <div class="v-counter-header">
+            <span class="v-counter-label"><i class="ti ti-mountain"></i> V4 o más</span>
+            <span class="v-total">Total hoy: <b>${totalVDay}</b></span>
+          </div>
+          <div class="v-levels">
+            ${['V4','V5','V6','V7'].map(lv=>`
+              <div class="v-btn-group">
+                <span class="v-lvl">${lv}</span>
+                <button class="v-cnt-btn" onclick="changeV('${wk}',${di},'${lv}',-1)">−</button>
+                <span class="v-count-num">${ds.vcounts[lv]||0}</span>
+                <button class="v-cnt-btn" onclick="changeV('${wk}',${di},'${lv}',1)">+</button>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div class="protein-row${ds.protein?' checked':''}" onclick="toggleProtein('${wk}',${di})">
+          <i class="ti ti-egg"></i>
+          <span class="protein-label">Tomé mi proteína hoy (80–100 g objetivo)</span>
+          <div class="protein-check"><i class="ti ti-check" style="color:${ds.protein?'white':'transparent'}"></i></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Modal
+  document.getElementById('modal-root').innerHTML = modalOpen ? `
+    <div class="modal-overlay" onclick="closeModal()">
+      <div class="modal" onclick="event.stopPropagation()">
+        <h3>Elegir días de rutina extensa</h3>
+        <p>Selecciona exactamente 2 días de la semana</p>
+        <div class="modal-days">
+          ${DAY_FULL.map((dn,i)=>`<button class="modal-day-btn${tempDays.includes(i)?' selected':''}" onclick="toggleTempDay(${i})">${dn}</button>`).join('')}
+        </div>
+        <div class="modal-actions">
+          <button class="cancel" onclick="closeModal()">Cancelar</button>
+          <button class="confirm" onclick="confirmModal()" ${tempDays.length!==2?'disabled':''}>Confirmar</button>
+        </div>
+      </div>
+    </div>` : '';
+}
+
+render();
+</script>
+</body>
+</html>
