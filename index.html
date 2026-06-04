@@ -4,352 +4,436 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gaby Boulder Tracker 🧗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
+:root {
+  --teal:    #0BBFA8;
+  --teal2:   #09a490;
+  --teal-bg: #E0F7F4;
+  --teal-dk: #065c53;
+  --orange:  #F47A20;
+  --orange2: #d96910;
+  --orange-bg: #FEF0E3;
+  --orange-dk: #7a330a;
+  --bg:      #ffffff;
+  --bg2:     #f4faf9;
+  --bg3:     #E8F8F5;
+  --text:    #0D2926;
+  --text2:   #3a6460;
+  --text3:   #7aafaa;
+  --border:  rgba(11,191,168,0.18);
+  --border2: rgba(11,191,168,0.38);
+  --green:   #0BBFA8;
+  --green-bg:#E0F7F4;
+  --green-dk:#065c53;
+  --radius:  10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --font-head: 'Nunito', sans-serif;
+  --font-body: 'Nunito Sans', sans-serif;
+}
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #ffffff;
-    --bg2: #f5f5f3;
-    --bg3: #eeece7;
-    --text: #1a1a18;
-    --text2: #6b6a65;
-    --text3: #9c9b96;
-    --border: rgba(0,0,0,0.12);
-    --border2: rgba(0,0,0,0.22);
-    --radius: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    --green: #1D9E75;
-    --green-bg: #E1F5EE;
-    --green-dark: #085041;
-    --purple: #534AB7;
-    --purple-bg: #EEEDFE;
-    --purple-dark: #3C3489;
-    --amber-bg: #FAEEDA;
-    --amber: #BA7517;
+    --bg:      #0a1f1d;
+    --bg2:     #0f2a27;
+    --bg3:     #132e2b;
+    --text:    #e8f8f5;
+    --text2:   #7addd4;
+    --text3:   #3a8a83;
+    --border:  rgba(11,191,168,0.2);
+    --border2: rgba(11,191,168,0.4);
+    --teal-bg: #0d3532;
+    --orange-bg:#2a1506;
+    --green-bg:#0d3532;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1c1c1a;
-      --bg2: #252523;
-      --bg3: #2e2e2b;
-      --text: #f0ede6;
-      --text2: #a0a09a;
-      --text3: #6b6a65;
-      --border: rgba(255,255,255,0.12);
-      --border2: rgba(255,255,255,0.22);
-      --green-bg: #0a3d2b;
-      --purple-bg: #1e1a4a;
-      --amber-bg: #3a2a0a;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
-  .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
-  .header { margin-bottom: 1.5rem; }
-  .header h1 { font-size: 24px; font-weight: 600; }
-  .header p { font-size: 13px; color: var(--text2); margin-top: 4px; }
-  .progress-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.5rem; }
-  .pcard { background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
-  .pcard .label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
-  .pcard .value { font-size: 20px; font-weight: 600; }
-  .pcard .sub { font-size: 11px; color: var(--text3); }
-  .week-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
-  .week-nav button { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius); padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--text); }
-  .week-nav button:hover { background: var(--bg2); }
-  .week-label { font-size: 14px; font-weight: 500; flex: 1; text-align: center; }
-  .config-bar { margin-bottom: 1rem; padding: 10px 14px; background: var(--bg2); border-radius: var(--radius); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .config-bar span { font-size: 13px; color: var(--text2); }
-  .assign-day-btn { font-size: 12px; padding: 4px 10px; border: 0.5px solid var(--purple); color: var(--purple); background: none; border-radius: var(--radius); cursor: pointer; }
-  .assign-day-btn:hover { background: var(--purple-bg); }
-  .days-grid { display: flex; flex-direction: column; gap: 8px; }
-  .day-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-  .day-card.done { border-color: var(--green); }
-  .day-card.done .day-header { background: var(--green-bg); }
-  .day-header { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
-  .day-header:hover { background: var(--bg2); }
-  .day-card.done .day-header:hover { filter: brightness(0.96); }
-  .day-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
-  .day-card.done .day-dot { background: var(--green); }
-  .day-title { display: flex; align-items: center; gap: 10px; }
-  .day-name { font-size: 14px; font-weight: 500; }
-  .day-date { font-size: 12px; color: var(--text2); font-weight: 400; }
-  .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 2px; }
-  .badge-intense { background: var(--purple-bg); color: var(--purple-dark); }
-  .badge-short { background: var(--green-bg); color: var(--green-dark); }
-  .badge-free { background: #FAECE7; color: #712B13; }
-  .day-actions { display: flex; align-items: center; gap: 8px; }
-  .task-count { font-size: 11px; color: var(--text3); }
-  .done-btn { font-size: 12px; padding: 4px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: none; cursor: pointer; color: var(--text2); white-space: nowrap; }
-  .done-btn:hover { background: var(--bg2); }
-  .day-card.done .done-btn { background: var(--green); color: white; border-color: var(--green); }
-  .chevron { font-size: 16px; color: var(--text2); transition: transform 0.2s; }
-  .chevron.open { transform: rotate(180deg); }
-  .day-body { display: none; padding: 12px 16px 16px; border-top: 0.5px solid var(--border); }
-  .day-body.open { display: block; }
-  .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 12px; overflow: hidden; }
-  .progress-bar-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.4s; }
-  .section-title { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin: 12px 0 8px; }
-  .section-title:first-child { margin-top: 0; }
-  .task-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid var(--border); }
-  .task-row:last-child { border-bottom: none; }
-  .task-check { width: 18px; height: 18px; border: 0.5px solid var(--border2); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .task-check.checked { background: var(--green); border-color: var(--green); }
-  .task-check i { font-size: 12px; color: white; display: none; }
-  .task-check.checked i { display: block; }
-  .task-label { font-size: 13px; flex: 1; }
-  .task-label.checked-label { color: var(--text3); text-decoration: line-through; }
-  .task-mins { font-size: 11px; color: var(--text3); white-space: nowrap; }
-  .v-counter { margin: 8px 0; background: var(--bg2); border-radius: var(--radius); padding: 10px 12px; }
-  .v-counter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .v-counter-label { font-size: 13px; font-weight: 500; }
-  .v-total { font-size: 13px; color: var(--text2); }
-  .v-levels { display: flex; gap: 10px; flex-wrap: wrap; }
-  .v-btn-group { display: flex; align-items: center; gap: 6px; }
-  .v-lvl { font-size: 12px; color: var(--text2); min-width: 26px; font-weight: 500; }
-  .v-cnt-btn { width: 26px; height: 26px; border: 0.5px solid var(--border2); background: var(--bg); border-radius: var(--radius); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--text); }
-  .v-cnt-btn:hover { background: var(--bg2); }
-  .v-count-num { min-width: 22px; text-align: center; font-size: 15px; font-weight: 600; }
-  .protein-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--amber-bg); border-radius: var(--radius); margin-top: 10px; cursor: pointer; }
-  .protein-row.checked { background: var(--green-bg); }
-  .protein-label { font-size: 13px; flex: 1; }
-  .protein-check { width: 22px; height: 22px; border: 0.5px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--bg); flex-shrink: 0; }
-  .protein-row.checked .protein-check { background: var(--green); border-color: var(--green); }
-  .protein-row.checked .protein-check i { color: white; }
-  .modal-overlay { position: fixed; top:0;left:0;right:0;bottom:0; background: rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:100; }
-  .modal { background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border2); padding: 20px; width: 320px; }
-  .modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-  .modal p { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
-  .modal-days { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-  .modal-day-btn { padding: 6px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: none; cursor: pointer; font-size: 13px; color: var(--text); }
-  .modal-day-btn.selected { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-  .modal-actions .cancel { padding: 6px 14px; border-radius: var(--radius); font-size: 13px; cursor: pointer; border: 0.5px solid var(--border2); background: none; color: var(--text); }
-  .modal-actions .confirm { padding: 6px 14px; border-radius: var(--radius); font-size: 13px; cursor: pointer; border: 0.5px solid var(--purple); background: var(--purple); color: white; }
-  .modal-actions .confirm:disabled { background: var(--bg2); border-color: var(--border); color: var(--text3); cursor: not-allowed; }
-  @media (max-width: 480px) {
-    .progress-cards { grid-template-columns: repeat(2, 1fr); }
-    .day-name { font-size: 13px; }
-    .v-levels { gap: 8px; }
-  }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg3);
+  color: var(--text);
+  min-height: 100vh;
+}
+.container { max-width: 600px; margin: 0 auto; padding: 0 0 4rem; }
+
+/* HEADER */
+.app-header {
+  background: var(--teal);
+  padding: 2rem 1.25rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: -28px; left: 0; right: 0;
+  height: 56px;
+  background: var(--bg3);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.app-title { font-family: var(--font-head); font-size: 26px; font-weight: 900; color: #ffffff; letter-spacing: -0.5px; }
+.app-subtitle { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+.week-nav { display: flex; align-items: center; gap: 10px; }
+.week-nav button {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 34px; height: 34px;
+  cursor: pointer; color: white; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.week-nav button:hover { background: rgba(255,255,255,0.35); }
+.week-label { font-family: var(--font-head); font-size: 14px; font-weight: 700; color: white; text-align: center; min-width: 140px; }
+
+/* STATS */
+.stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 1rem; margin-top: 2rem; margin-bottom: 1rem; }
+.stat-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.stat-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.stat-icon.teal { background: var(--teal-bg); color: var(--teal); }
+.stat-icon.orange { background: var(--orange-bg); color: var(--orange); }
+.stat-val { font-family: var(--font-head); font-size: 22px; font-weight: 900; color: var(--text); line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--text2); margin-top: 2px; font-weight: 600; }
+
+/* CONFIG */
+.config-row { display: flex; align-items: center; gap: 8px; padding: 0 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.config-label { font-size: 12px; color: var(--text2); font-weight: 600; }
+.config-badge {
+  font-family: var(--font-head); font-size: 12px; font-weight: 800;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--teal); color: white;
+}
+.change-btn {
+  margin-left: auto; font-size: 12px; font-weight: 700;
+  padding: 5px 12px; border-radius: 20px;
+  border: 1.5px solid var(--orange); color: var(--orange);
+  background: none; cursor: pointer;
+}
+.change-btn:hover { background: var(--orange-bg); }
+
+/* DAY CARDS */
+.days-list { display: flex; flex-direction: column; gap: 10px; padding: 0 1rem; }
+.day-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.day-card.done { border-color: var(--teal); }
+
+.day-header {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+}
+.day-header:hover { background: var(--bg2); }
+.day-card.done .day-header { background: var(--teal-bg); }
+
+.day-left { display: flex; align-items: center; gap: 12px; }
+.day-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--border2); flex-shrink: 0;
+}
+.day-card.done .day-dot { background: var(--teal); border-color: var(--teal); }
+
+.day-name {
+  font-family: var(--font-head); font-size: 15px; font-weight: 800;
+  color: var(--text); line-height: 1.2;
+}
+.day-date { font-size: 11px; color: var(--text2); font-weight: 600; }
+
+.type-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px; margin-top: 3px; letter-spacing: 0.03em; }
+.badge-intense { background: var(--orange); color: white; }
+.badge-short { background: var(--teal-bg); color: var(--teal-dk); }
+.badge-free { background: var(--orange-bg); color: var(--orange-dk); }
+
+.day-right { display: flex; align-items: center; gap: 8px; }
+.tc-badge { font-size: 11px; color: var(--text3); font-weight: 700; }
+.done-btn {
+  font-family: var(--font-head); font-size: 11px; font-weight: 800;
+  padding: 5px 12px; border-radius: 20px; cursor: pointer;
+  border: 1.5px solid var(--border2);
+  background: none; color: var(--text2); white-space: nowrap;
+}
+.done-btn:hover { background: var(--bg2); }
+.day-card.done .done-btn { background: var(--teal); color: white; border-color: var(--teal); }
+.chevron { font-size: 16px; color: var(--text3); transition: transform 0.2s; }
+.chevron.open { transform: rotate(180deg); }
+
+/* BODY */
+.day-body { display: none; padding: 0 16px 16px; border-top: 1.5px solid var(--border); }
+.day-body.open { display: block; }
+.prog-bar { height: 5px; background: var(--border); border-radius: 3px; margin: 12px 0; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.4s; }
+.sec-title { font-family: var(--font-head); font-size: 11px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 8px; }
+
+/* TASKS */
+.task-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.task-row:last-child { border-bottom: none; }
+.task-chk {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 1.5px solid var(--border2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.task-chk.on { background: var(--teal); border-color: var(--teal); }
+.task-chk i { font-size: 13px; color: white; display: none; }
+.task-chk.on i { display: block; }
+.task-lbl { font-size: 13px; flex: 1; font-weight: 600; }
+.task-lbl.done { color: var(--text3); text-decoration: line-through; font-weight: 400; }
+.task-mins { font-size: 11px; color: var(--text3); white-space: nowrap; font-weight: 700; }
+
+/* V COUNTER */
+.v-box { background: var(--bg2); border-radius: var(--radius); padding: 12px 14px; margin: 8px 0; border: 1.5px solid var(--border); }
+.v-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.v-head-lbl { font-family: var(--font-head); font-size: 13px; font-weight: 800; color: var(--text); }
+.v-total { font-size: 12px; color: var(--text2); font-weight: 700; }
+.v-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.v-group { display: flex; align-items: center; gap: 6px; background: var(--bg); border-radius: var(--radius); padding: 6px 10px; border: 1.5px solid var(--border); }
+.v-lbl { font-family: var(--font-head); font-size: 12px; font-weight: 900; color: var(--teal); min-width: 24px; }
+.v-btn { width: 26px; height: 26px; border: 1.5px solid var(--border2); background: none; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--text); font-weight: 700; }
+.v-btn:hover { background: var(--teal-bg); }
+.v-num { min-width: 22px; text-align: center; font-family: var(--font-head); font-size: 16px; font-weight: 900; color: var(--text); }
+
+/* PROTEIN */
+.prot-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: var(--radius);
+  background: var(--orange-bg); margin-top: 10px; cursor: pointer;
+  border: 1.5px solid transparent;
+}
+.prot-row.on { background: var(--teal-bg); border-color: var(--teal); }
+.prot-icon { font-size: 20px; color: var(--orange); }
+.prot-row.on .prot-icon { color: var(--teal); }
+.prot-lbl { font-size: 13px; font-weight: 700; flex: 1; }
+.prot-chk { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border2); background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.prot-row.on .prot-chk { background: var(--teal); border-color: var(--teal); }
+.prot-row.on .prot-chk i { color: white; }
+.prot-chk i { color: transparent; }
+
+/* MODAL */
+.modal-wrap { position: fixed; top:0;left:0;right:0;bottom:0; background: rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; z-index:200; }
+.modal {
+  background: var(--bg); border-radius: var(--radius-xl);
+  border: 1.5px solid var(--border2); padding: 22px; width: 320px;
+}
+.modal h3 { font-family: var(--font-head); font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+.modal p { font-size: 12px; color: var(--text2); margin-bottom: 14px; font-weight: 600; }
+.modal-days { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.md-btn {
+  padding: 7px 14px; border-radius: 20px; cursor: pointer;
+  font-family: var(--font-head); font-size: 13px; font-weight: 800;
+  border: 1.5px solid var(--border2); background: none; color: var(--text);
+}
+.md-btn.sel { background: var(--teal); color: white; border-color: var(--teal); }
+.modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+.m-cancel { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border2); background: none; color: var(--text); }
+.m-confirm { padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; background: var(--teal); color: white; font-family: var(--font-head); }
+.m-confirm:disabled { background: var(--bg2); color: var(--text3); cursor: not-allowed; }
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .app-title { font-size: 22px; }
+}
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="header">
-    <h1>🧗 Gaby Boulder Tracker</h1>
-    <p>Seguimiento semanal · Objetivo: V5 sólido → V6 frecuente → primeros V7</p>
+
+  <div class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="app-title">🧗 Boulder Tracker</div>
+        <div class="app-subtitle">Gaby · V5 sólido → V6 frecuente → primeros V7</div>
+      </div>
+      <div class="week-nav">
+        <button onclick="changeWeek(-1)"><i class="ti ti-arrow-left"></i></button>
+        <div class="week-label" id="week-label"></div>
+        <button onclick="changeWeek(1)"><i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
   </div>
-  <div class="progress-cards" id="progress-cards"></div>
-  <div class="week-nav">
-    <button onclick="changeWeek(-1)"><i class="ti ti-arrow-left"></i></button>
-    <span class="week-label" id="week-label"></span>
-    <button onclick="changeWeek(1)"><i class="ti ti-arrow-right"></i></button>
+
+  <div class="stats-row" id="stats-row"></div>
+
+  <div class="config-row">
+    <span class="config-label">Días intensos:</span>
+    <div id="intense-badges"></div>
+    <button class="change-btn" onclick="openModal()"><i class="ti ti-edit"></i> Cambiar</button>
   </div>
-  <div class="config-bar">
-    <span>Días de rutina extensa:</span>
-    <div id="intense-btns"></div>
-    <button class="assign-day-btn" onclick="openModal()"><i class="ti ti-edit"></i> Cambiar</button>
-  </div>
-  <div class="days-grid" id="days-grid"></div>
+
+  <div class="days-list" id="days-list"></div>
+
   <div id="modal-root"></div>
 </div>
 
 <script>
 const DAY_SHORT = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-const DAY_FULL = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const DAY_FULL  = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
-const TASKS_DIA1 = [
-  {id:'warm', label:'Calentamiento: movilidad hombros, muñecas, dedos + 2×V1, V2, V3', mins:15},
-  {id:'proj', label:'Proyectar: 2×V6 o 1×V6 + 1×V7 (2–3 min descanso entre intentos)', mins:20},
-  {id:'pullups', label:'Pull-ups lastradas o lentas 4×4'},
+const T1 = [
+  {id:'warm',  label:'Calentamiento: movilidad hombros, muñecas, dedos + 2×V1/V2/V3', mins:15},
+  {id:'proj',  label:'Proyectar: 2×V6 o 1×V6 + 1×V7 — 2-3 min descanso entre intentos', mins:20},
+  {id:'pull',  label:'Pull-ups lastradas o lentas 4×4'},
   {id:'press', label:'Press militar mancuernas 3×8 (10–15 kg)'},
-  {id:'face', label:'Face Pulls o banda 3×15'},
-  {id:'hollow', label:'Hollow Body Hold 4×30s'},
-  {id:'farmer', label:'Farmer Carry 3×30s (mancuernas pesadas)'},
-  {id:'stretch', label:'Estiramiento + dedos: Prayer, Reverse Prayer, extensiones con liga', mins:10},
+  {id:'face',  label:'Face Pulls o banda 3×15'},
+  {id:'holl',  label:'Hollow Body Hold 4×30s'},
+  {id:'farm',  label:'Farmer Carry 3×30s (mancuernas pesadas)'},
+  {id:'str',   label:'Estiramiento + dedos: Prayer, Reverse Prayer, extensiones con liga', mins:10},
 ];
-const TASKS_DIA2 = [
-  {id:'warm', label:'Calentamiento: movilidad hombros, muñecas, dedos + 2×V1, V2, V3', mins:15},
-  {id:'dynos', label:'Escalada: 5–6 problemas con dynos, coordinación, explosivos', mins:35},
-  {id:'boxjump', label:'Box Step Jump 3×8'},
-  {id:'kbswing', label:'Kettlebell Swing o mancuerna 3×12'},
-  {id:'pushpress', label:'Push Press 3×8'},
-  {id:'t2b', label:'Toes to Bar / Hanging Knee Raises 4×10'},
-  {id:'dedhang', label:'Dead Hang 3×20–30s'},
-  {id:'stretch', label:'Estiramiento + dedos: Prayer, Reverse Prayer, extensiones con liga', mins:10},
+const T2 = [
+  {id:'warm',  label:'Calentamiento: movilidad hombros, muñecas, dedos + 2×V1/V2/V3', mins:15},
+  {id:'dyn',   label:'Escalada: 5–6 problemas con dynos, coordinación, explosivos', mins:35},
+  {id:'box',   label:'Box Step Jump 3×8'},
+  {id:'kb',    label:'Kettlebell Swing o mancuerna 3×12'},
+  {id:'pp',    label:'Push Press 3×8'},
+  {id:'t2b',   label:'Toes to Bar / Hanging Knee Raises 4×10'},
+  {id:'dh',    label:'Dead Hang 3×20–30s'},
+  {id:'str',   label:'Estiramiento + dedos: Prayer, Reverse Prayer, extensiones con liga', mins:10},
 ];
-const TASKS_SHORT = [
-  {id:'warm', label:'Calentamiento suave', mins:5},
-  {id:'plank', label:'Plank 45s × 2 rondas'},
-  {id:'sideplank', label:'Side Plank 30s × lado × 2 rondas'},
-  {id:'scap', label:'Scapular Push-Ups 15 reps × 2'},
-  {id:'band', label:'Band Pull Apart 20 reps × 2'},
-  {id:'wrist', label:'Wrist Curls + Reverse Wrist Curls 15 reps × 2'},
-  {id:'stretch', label:'Estiramiento breve', mins:5},
-];
-const TASKS_FREE = [
-  {id:'warm', label:'Calentamiento libre', mins:10},
-  {id:'free', label:'Escalada libre V3–V5 — solo disfruta 🤙', mins:30},
-  {id:'stretch', label:'Estiramiento final', mins:10},
+const TS = [
+  {id:'warm',  label:'Calentamiento suave', mins:5},
+  {id:'plnk',  label:'Plank 45s × 2 rondas'},
+  {id:'splnk', label:'Side Plank 30s × lado × 2'},
+  {id:'scap',  label:'Scapular Push-Ups 15 reps × 2'},
+  {id:'band',  label:'Band Pull Apart 20 reps × 2'},
+  {id:'wrist', label:'Wrist Curls + Reverse 15 reps × 2'},
+  {id:'str',   label:'Estiramiento breve', mins:5},
 ];
 
-let intenseDays = JSON.parse(localStorage.getItem('intenseDays') || '[0,2]');
-let weekOffset = 0;
-let appState = JSON.parse(localStorage.getItem('gbState') || '{}');
-let modalOpen = false;
-let tempDays = [];
+let intenseDays = JSON.parse(localStorage.getItem('gb_intense') || '[0,2]');
+let weekOff = 0;
+let S = JSON.parse(localStorage.getItem('gb_state') || '{}');
+let showModal = false, tmpDays = [];
 
-function save() { localStorage.setItem('gbState', JSON.stringify(appState)); localStorage.setItem('intenseDays', JSON.stringify(intenseDays)); }
+function save() { localStorage.setItem('gb_state', JSON.stringify(S)); localStorage.setItem('gb_intense', JSON.stringify(intenseDays)); }
+function getWK(o) {
+  const n=new Date(), d=n.getDay(), m=new Date(n);
+  m.setDate(n.getDate()-(d===0?6:d-1)+o*7); return m.toISOString().slice(0,10);
+}
+function getWDs(o) {
+  const n=new Date(), d=n.getDay(), m=new Date(n);
+  m.setDate(n.getDate()-(d===0?6:d-1)+o*7);
+  return Array.from({length:7},(_,i)=>{ const x=new Date(m); x.setDate(m.getDate()+i); return x; });
+}
+function ds(wk, di) {
+  if(!S[wk]) S[wk]={};
+  if(!S[wk][di]) S[wk][di]={tasks:{},done:false,vc:{V4:0,V5:0,V6:0,V7:0},prot:false,open:false};
+  return S[wk][di];
+}
+function type(di) { return di===intenseDays[0]?'d1':di===intenseDays[1]?'d2':'sh'; }
+function tasks(t) { return t==='d1'?T1:t==='d2'?T2:TS; }
 
-function getWeekKey(offset) {
-  const now = new Date(); const day = now.getDay();
-  const mon = new Date(now); mon.setDate(now.getDate() - (day===0?6:day-1) + offset*7);
-  return mon.toISOString().slice(0,10);
-}
-function getWeekDates(offset) {
-  const now = new Date(); const day = now.getDay();
-  const mon = new Date(now); mon.setDate(now.getDate() - (day===0?6:day-1) + offset*7);
-  return Array.from({length:7},(_,i)=>{ const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
-}
-function getDayState(wk, di) {
-  if(!appState[wk]) appState[wk]={};
-  if(!appState[wk][di]) appState[wk][di]={tasks:{},done:false,vcounts:{V4:0,V5:0,V6:0,V7:0},protein:false,open:false};
-  return appState[wk][di];
-}
-function getDayType(di) {
-  if(intenseDays[0]===di) return 'dia1';
-  if(intenseDays[1]===di) return 'dia2';
-  return 'short';
-}
-function getTasks(type) {
-  if(type==='dia1') return TASKS_DIA1;
-  if(type==='dia2') return TASKS_DIA2;
-  return TASKS_SHORT;
-}
-
-function changeWeek(d) { weekOffset+=d; render(); }
-
-function toggleTask(wk,di,tid) { const ds=getDayState(wk,di); ds.tasks[tid]=!ds.tasks[tid]; save(); render(); }
-function toggleDone(wk,di) { const ds=getDayState(wk,di); ds.done=!ds.done; save(); render(); }
-function changeV(wk,di,lv,d) { const ds=getDayState(wk,di); ds.vcounts[lv]=Math.max(0,(ds.vcounts[lv]||0)+d); save(); render(); }
-function toggleProtein(wk,di) { const ds=getDayState(wk,di); ds.protein=!ds.protein; save(); render(); }
-function toggleOpen(wk,di) { const ds=getDayState(wk,di); ds.open=!ds.open; save(); render(); }
-
-function openModal() { tempDays=[...intenseDays]; modalOpen=true; render(); }
-function closeModal() { modalOpen=false; render(); }
-function toggleTempDay(d) {
-  if(tempDays.includes(d)) { if(tempDays.length>1) tempDays=tempDays.filter(x=>x!==d); }
-  else { if(tempDays.length<2) tempDays.push(d); }
-  render();
-}
-function confirmModal() { intenseDays=[...tempDays].sort((a,b)=>a-b); save(); modalOpen=false; render(); }
+function changeWeek(d){ weekOff+=d; render(); }
+function toggleTask(wk,di,id){ const d=ds(wk,di); d.tasks[id]=!d.tasks[id]; save(); render(); }
+function toggleDone(wk,di){ const d=ds(wk,di); d.done=!d.done; save(); render(); }
+function chV(wk,di,lv,delta){ const d=ds(wk,di); d.vc[lv]=Math.max(0,(d.vc[lv]||0)+delta); save(); render(); }
+function togProt(wk,di){ const d=ds(wk,di); d.prot=!d.prot; save(); render(); }
+function togOpen(wk,di){ const d=ds(wk,di); d.open=!d.open; save(); render(); }
+function openModal(){ tmpDays=[...intenseDays]; showModal=true; render(); }
+function closeModal(){ showModal=false; render(); }
+function togTmp(d){ tmpDays.includes(d)?tmpDays.length>1&&(tmpDays=tmpDays.filter(x=>x!==d)):tmpDays.length<2&&tmpDays.push(d); render(); }
+function confirmModal(){ intenseDays=[...tmpDays].sort((a,b)=>a-b); save(); showModal=false; render(); }
 
 function render() {
-  const wk = getWeekKey(weekOffset);
-  const dates = getWeekDates(weekOffset);
-  const opts = {day:'numeric',month:'short'};
+  const wk=getWK(weekOff), dates=getWDs(weekOff);
+  const opts={day:'numeric',month:'short'};
+  document.getElementById('week-label').textContent=dates[0].toLocaleDateString('es-MX',opts)+' – '+dates[6].toLocaleDateString('es-MX',opts);
 
-  document.getElementById('week-label').textContent =
-    dates[0].toLocaleDateString('es-MX',opts) + ' – ' + dates[6].toLocaleDateString('es-MX',opts);
-
-  // Stats
-  let totalT=0, doneT=0, totalV=0, protDays=0, sessDone=0;
-  for(let d=0;d<7;d++) {
-    const ds=getDayState(wk,d);
-    const tasks=getTasks(getDayType(d));
-    totalT+=tasks.length; doneT+=tasks.filter(t=>ds.tasks[t.id]).length;
-    totalV+=Object.values(ds.vcounts).reduce((a,b)=>a+b,0);
-    if(ds.protein) protDays++;
-    if(ds.done && intenseDays.includes(d)) sessDone++;
+  let tt=0,td=0,tv=0,tp=0,ts=0;
+  for(let i=0;i<7;i++){
+    const d=ds(wk,i), t=tasks(type(i));
+    tt+=t.length; td+=t.filter(x=>d.tasks[x.id]).length;
+    tv+=Object.values(d.vc).reduce((a,b)=>a+b,0);
+    if(d.prot) tp++;
+    if(d.done&&intenseDays.includes(i)) ts++;
   }
-  const pct = totalT ? Math.round(doneT/totalT*100) : 0;
-  document.getElementById('progress-cards').innerHTML = `
-    <div class="pcard"><div class="label">Semana</div><div class="value">${pct}%</div><div class="sub">completado</div></div>
-    <div class="pcard"><div class="label">Rutas V4+</div><div class="value">${totalV}</div><div class="sub">esta semana</div></div>
-    <div class="pcard"><div class="label">Proteína</div><div class="value">${protDays}/7</div><div class="sub">días</div></div>
-    <div class="pcard"><div class="label">Sesiones</div><div class="value">${sessDone}/2</div><div class="sub">intensas ✓</div></div>`;
+  const pct=tt?Math.round(td/tt*100):0;
 
-  document.getElementById('intense-btns').innerHTML = intenseDays.map(d=>
-    `<span style="font-size:12px;padding:3px 10px;border-radius:20px;background:var(--purple-bg);color:var(--purple-dark);margin-right:4px">${DAY_SHORT[d]}</span>`).join('');
+  document.getElementById('stats-row').innerHTML=`
+    <div class="stat-card"><div class="stat-icon teal"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div><div class="stat-val">${pct}%</div><div class="stat-lbl">Semana completada</div></div></div>
+    <div class="stat-card"><div class="stat-icon orange"><i class="ti ti-mountain" aria-hidden="true"></i></div><div><div class="stat-val">${tv}</div><div class="stat-lbl">Rutas V4+ esta semana</div></div></div>
+    <div class="stat-card"><div class="stat-icon teal"><i class="ti ti-egg" aria-hidden="true"></i></div><div><div class="stat-val">${tp}/7</div><div class="stat-lbl">Días con proteína</div></div></div>
+    <div class="stat-card"><div class="stat-icon orange"><i class="ti ti-bolt" aria-hidden="true"></i></div><div><div class="stat-val">${ts}/2</div><div class="stat-lbl">Sesiones intensas</div></div></div>`;
 
-  // Days
-  document.getElementById('days-grid').innerHTML = dates.map((date,di)=>{
-    const ds=getDayState(wk,di);
-    const type=getDayType(di);
-    const tasks=getTasks(type);
-    const typeLabel = type==='dia1'?'Fuerza + Proyectos':type==='dia2'?'Potencia + Explosivos':'Rutina corta · 10 min';
-    const badgeClass = type.startsWith('dia')?'badge-intense':'badge-short';
-    const tDone=tasks.filter(t=>ds.tasks[t.id]).length;
-    const pctD=Math.round(tDone/tasks.length*100);
-    const dateStr=date.toLocaleDateString('es-MX',opts);
-    const totalVDay=Object.values(ds.vcounts).reduce((a,b)=>a+b,0);
+  document.getElementById('intense-badges').innerHTML=intenseDays.map(d=>`<span class="config-badge">${DAY_SHORT[d]}</span>`).join(' ');
 
-    return `<div class="day-card${ds.done?' done':''}">
-      <div class="day-header" onclick="toggleOpen('${wk}',${di})">
-        <div class="day-title">
+  document.getElementById('days-list').innerHTML=dates.map((date,di)=>{
+    const d=ds(wk,di), tp=type(di), tl=tasks(tp);
+    const label=tp==='d1'?'Fuerza + Proyectos':tp==='d2'?'Potencia + Explosivos':'Rutina corta · 10 min';
+    const bc=tp.startsWith('d')?'badge-intense':'badge-short';
+    const done=tl.filter(t=>d.tasks[t.id]).length;
+    const pct=Math.round(done/tl.length*100);
+    const vtot=Object.values(d.vc).reduce((a,b)=>a+b,0);
+    const dstr=date.toLocaleDateString('es-MX',opts);
+    return `<div class="day-card${d.done?' done':''}">
+      <div class="day-header" onclick="togOpen('${wk}',${di})">
+        <div class="day-left">
           <div class="day-dot"></div>
           <div>
-            <span class="day-name">${DAY_FULL[di]} <span class="day-date">${dateStr}</span></span><br>
-            <span class="badge ${badgeClass}">${typeLabel}</span>
+            <div class="day-name">${DAY_FULL[di]} <span class="day-date">${dstr}</span></div>
+            <span class="type-badge ${bc}">${label}</span>
           </div>
         </div>
-        <div class="day-actions">
-          <span class="task-count">${tDone}/${tasks.length}</span>
-          <button class="done-btn" onclick="event.stopPropagation();toggleDone('${wk}',${di})">${ds.done?'✓ Done':'Marcar done'}</button>
-          <i class="ti ti-chevron-down chevron${ds.open?' open':''}"></i>
+        <div class="day-right">
+          <span class="tc-badge">${done}/${tl.length}</span>
+          <button class="done-btn" onclick="event.stopPropagation();toggleDone('${wk}',${di})">${d.done?'✓ Done':'Marcar done'}</button>
+          <i class="ti ti-chevron-down chevron${d.open?' open':''}" aria-hidden="true"></i>
         </div>
       </div>
-      <div class="day-body${ds.open?' open':''}">
-        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pctD}%"></div></div>
-        <div class="section-title">Tareas del día</div>
-        ${tasks.map(t=>{
-          const chk=!!ds.tasks[t.id];
-          return `<div class="task-row">
-            <div class="task-check${chk?' checked':''}" onclick="toggleTask('${wk}',${di},'${t.id}')"><i class="ti ti-check"></i></div>
-            <span class="task-label${chk?' checked-label':''}">${t.label}</span>
-            ${t.mins?`<span class="task-mins">${t.mins} min</span>`:''}
-          </div>`;
-        }).join('')}
-        <div class="section-title" style="margin-top:14px">Rutas logradas</div>
-        <div class="v-counter">
-          <div class="v-counter-header">
-            <span class="v-counter-label"><i class="ti ti-mountain"></i> V4 o más</span>
-            <span class="v-total">Total hoy: <b>${totalVDay}</b></span>
-          </div>
-          <div class="v-levels">
-            ${['V4','V5','V6','V7'].map(lv=>`
-              <div class="v-btn-group">
-                <span class="v-lvl">${lv}</span>
-                <button class="v-cnt-btn" onclick="changeV('${wk}',${di},'${lv}',-1)">−</button>
-                <span class="v-count-num">${ds.vcounts[lv]||0}</span>
-                <button class="v-cnt-btn" onclick="changeV('${wk}',${di},'${lv}',1)">+</button>
-              </div>`).join('')}
-          </div>
+      <div class="day-body${d.open?' open':''}">
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <div class="sec-title">Tareas del día</div>
+        ${tl.map(t=>{const c=!!d.tasks[t.id];return`<div class="task-row">
+          <div class="task-chk${c?' on':''}" onclick="toggleTask('${wk}',${di},'${t.id}')"><i class="ti ti-check"></i></div>
+          <span class="task-lbl${c?' done':''}">${t.label}</span>
+          ${t.mins?`<span class="task-mins">${t.mins}min</span>`:''}
+        </div>`}).join('')}
+        <div class="sec-title">Rutas logradas hoy</div>
+        <div class="v-box">
+          <div class="v-head"><span class="v-head-lbl"><i class="ti ti-mountain" aria-hidden="true"></i> V4 o más</span><span class="v-total">Total: <b>${vtot}</b></span></div>
+          <div class="v-grid">${['V4','V5','V6','V7'].map(lv=>`
+            <div class="v-group">
+              <span class="v-lbl">${lv}</span>
+              <button class="v-btn" onclick="chV('${wk}',${di},'${lv}',-1)">−</button>
+              <span class="v-num">${d.vc[lv]||0}</span>
+              <button class="v-btn" onclick="chV('${wk}',${di},'${lv}',1)">+</button>
+            </div>`).join('')}</div>
         </div>
-        <div class="protein-row${ds.protein?' checked':''}" onclick="toggleProtein('${wk}',${di})">
-          <i class="ti ti-egg"></i>
-          <span class="protein-label">Tomé mi proteína hoy (80–100 g objetivo)</span>
-          <div class="protein-check"><i class="ti ti-check" style="color:${ds.protein?'white':'transparent'}"></i></div>
+        <div class="prot-row${d.prot?' on':''}" onclick="togProt('${wk}',${di})">
+          <i class="ti ti-egg prot-icon" aria-hidden="true"></i>
+          <span class="prot-lbl">Tomé mi proteína hoy (80–100 g)</span>
+          <div class="prot-chk"><i class="ti ti-check"></i></div>
         </div>
       </div>
     </div>`;
   }).join('');
 
-  // Modal
-  document.getElementById('modal-root').innerHTML = modalOpen ? `
-    <div class="modal-overlay" onclick="closeModal()">
+  document.getElementById('modal-root').innerHTML=showModal?`
+    <div class="modal-wrap" onclick="closeModal()">
       <div class="modal" onclick="event.stopPropagation()">
-        <h3>Elegir días de rutina extensa</h3>
-        <p>Selecciona exactamente 2 días de la semana</p>
-        <div class="modal-days">
-          ${DAY_FULL.map((dn,i)=>`<button class="modal-day-btn${tempDays.includes(i)?' selected':''}" onclick="toggleTempDay(${i})">${dn}</button>`).join('')}
-        </div>
-        <div class="modal-actions">
-          <button class="cancel" onclick="closeModal()">Cancelar</button>
-          <button class="confirm" onclick="confirmModal()" ${tempDays.length!==2?'disabled':''}>Confirmar</button>
+        <h3>Días de rutina extensa</h3>
+        <p>Elige exactamente 2 días de la semana</p>
+        <div class="modal-days">${DAY_FULL.map((n,i)=>`<button class="md-btn${tmpDays.includes(i)?' sel':''}" onclick="togTmp(${i})">${n}</button>`).join('')}</div>
+        <div class="modal-btns">
+          <button class="m-cancel" onclick="closeModal()">Cancelar</button>
+          <button class="m-confirm" onclick="confirmModal()" ${tmpDays.length!==2?'disabled':''}>Confirmar</button>
         </div>
       </div>
-    </div>` : '';
+    </div>`:'';
 }
 
 render();
